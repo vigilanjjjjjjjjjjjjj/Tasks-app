@@ -389,4 +389,29 @@
 
     show_11495278().then(() => {
       completeTask(task);
-    }).cat
+    }).catch(() => {
+      state[id] = 'idle';
+      render();
+    });
+  }
+
+  function completeTask(task){
+    state[task.id] = 'claimed';
+    balance += task.reward;
+    streak += 1;
+    render();
+    showToast(`+$${task.reward.toFixed(3)} added to balance`);
+  }
+
+  function showToast(msg){
+    toastEl.textContent = msg;
+    toastEl.classList.add('show');
+    clearTimeout(showToast._t);
+    showToast._t = setTimeout(() => toastEl.classList.remove('show'), 1800);
+  }
+
+  render();
+</script>
+
+</body>
+</html>
