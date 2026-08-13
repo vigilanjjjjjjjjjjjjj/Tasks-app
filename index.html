@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <script src='//libtl.com/sdk.js' data-zone='11495278' data-sdk='show_11495278'></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Vault — Tasks</title>
@@ -52,6 +51,7 @@
     min-height: 720px;
   }
 
+  /* ambient glow signature */
   .phone::before{
     content:"";
     position:absolute;
@@ -255,6 +255,7 @@
   }
   .streak b{ color: var(--text); font-weight:600; }
 
+  /* toast */
   .toast{
     position:absolute;
     left: 50%;
@@ -306,6 +307,7 @@
   <div class="section-label">Available now</div>
 
   <main id="taskList">
+    <!-- tasks injected by JS -->
   </main>
 
   <footer>
@@ -319,11 +321,39 @@
 </div>
 
 <script>
+  // ── Telegram Mini App integration ──────────────────────────────
+  // If this page is opened inside Telegram, window.Telegram.WebApp
+  // gives you the user's info and lets you tell Telegram the app is ready.
+  // Docs: https://core.telegram.org/bots/webapps
+
+  window.onerror = function(msg, url, line, col, error) {
+    document.body.insertAdjacentHTML('afterbegin',
+      '<div style="position:fixed;top:0;left:0;right:0;background:#c0392b;color:#fff;' +
+      'padding:14px;font-family:monospace;font-size:13px;z-index:9999;white-space:pre-wrap;">' +
+      'JS ERROR:\n' + msg + '\nLine ' + line + ', Col ' + col + '</div>');
+    return false;
+  };
+
   const tg = window.Telegram?.WebApp;
   if (tg) {
     tg.ready();
     tg.expand();
+    // tg.initDataUnsafe.user.id -> the Telegram user's numeric ID,
+    // useful as the key for storing their balance server-side.
   }
+
+  // ── Ad network SDK ──────────────────────────────────────────────
+  // Paste your ad network's SDK <script> tag in the <head> of this
+  // file (below the Google Fonts links), then replace the body of
+  // completeTask()'s "watch" branch below with your SDK's actual
+  // show-ad call, e.g. something like:
+  //
+  //   show_XXXXXXX('interstitial').then(() => {
+  //     completeTask(task);  // only grant the reward once the SDK confirms
+  //   });
+  //
+  // Check the "Docs" link on your ad network's dashboard for the
+  // exact function name and parameters — they vary by provider.
 
   const tasks = [
     { id: 't1', icon: '🎬', title: 'Watch a short ad', meta: '15 sec · rewarded video', reward: 0.008, action: 'watch', duration: 2200 },
@@ -340,6 +370,8 @@
   const balanceEl = document.getElementById('balance');
   const streakEl = document.getElementById('streakCount');
   const toastEl = document.getElementById('toast');
+
+  function fmt(n){ return n.toFixed(3).replace(/0+$/,'').replace(/\.$/,'.000').slice(0, n < 0.01 ? 5 : 6) ; }
 
   function render(){
     listEl.innerHTML = '';
@@ -388,9 +420,13 @@
     state[id] = 'watching';
     render();
 
+    // Rewarded Interstitial via Monetag SDK — reward is only granted
+    // once the SDK's promise resolves (i.e. the ad was actually watched).
     show_11495278().then(() => {
       completeTask(task);
     }).catch(() => {
+      // Ad failed to load or was skipped — reset the button so the
+      // user can try again instead of getting stuck on "watching".
       state[id] = 'idle';
       render();
     });
