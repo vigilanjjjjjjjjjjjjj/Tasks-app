@@ -321,11 +321,6 @@
 </div>
 
 <script>
-  // ── Telegram Mini App integration ──────────────────────────────
-  // If this page is opened inside Telegram, window.Telegram.WebApp
-  // gives you the user's info and lets you tell Telegram the app is ready.
-  // Docs: https://core.telegram.org/bots/webapps
-
   window.onerror = function(msg, url, line, col, error) {
     document.body.insertAdjacentHTML('afterbegin',
       '<div style="position:fixed;top:0;left:0;right:0;background:#c0392b;color:#fff;' +
@@ -333,6 +328,13 @@
       'JS ERROR:\n' + msg + '\nLine ' + line + ', Col ' + col + '</div>');
     return false;
   };
+</script>
+
+<script>
+  // ── Telegram Mini App integration ──────────────────────────────
+  // If this page is opened inside Telegram, window.Telegram.WebApp
+  // gives you the user's info and lets you tell Telegram the app is ready.
+  // Docs: https://core.telegram.org/bots/webapps
 
   const tg = window.Telegram?.WebApp;
   if (tg) {
@@ -450,5 +452,9 @@
   render();
 </script>
 
+<script>
+  document.title = document.title + ' [script ran OK]';
+</script>
+
 </body>
-</html>
+  </html>
