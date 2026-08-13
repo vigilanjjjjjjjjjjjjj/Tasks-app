@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vault — Tasks</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<!--
+  Monetag SDK — loads the show_11495278() function used below.
+-->
+<script src='//libtl.com/sdk.js' data-zone='11495278' data-sdk='show_11495278'></script>
+<style>
+  :root{
+    --bg: #0B0C10;
+    --bg-raised: #15171D;
+    --bg-card: #1B1E26;
+    --line: #262A34;
+    --amber: #F2A93B;
+    --amber-deep: #C77F1F;
+    --mint: #4FE3A3;
+    --text: #F4F3EF;
+    --text-dim: #9497A3;
+    --text-faint: #5C6070;
+  }
+  *{ box-sizing: border-box; margin:0; padding:0; }
+  html,body{
+    background: #05060A;
+    height: 100%;
+  }
+  body{
+    font-family: 'Inter', -apple-system, sans-serif;
+    color: var(--text);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    min-height: 100vh;
+    padding: 24px 12px;
+  }
+
+  .phone{
+    width: 100%;
+    max-width: 380px;
+    background: var(--bg);
+    border-radius: 28px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 40px 80px -20px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.04);
+    display:flex;
+    flex-direction:column;
+    min-height: 720px;
+  }
+
+  /* ambient glow signature */
+  .phone::before{
+    content:"";
+    position:absolute;
+    top:-120px; left:50%;
+    width: 320px; height: 320px;
+    background: radial-gradient(circle, rgba(242,169,59,0.18), transparent 70%);
+    transform: translateX(-50%);
+    pointer-events:none;
+  }
+
+  header{
+    padding: 18px 20px 14px;
+    display:flex;
+    align-items:center;
+    justify-content: space-between;
+    position: relative;
+    z-index: 2;
+  }
+  .brand{
+    display:flex;
+    align-items:center;
+    gap:9px;
+  }
+  .brand-mark{
+    width: 26px; height: 26px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, var(--amber), var(--amber-deep));
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Space Grotesk', sans-serif;
+    font-weight:700; font-size: 14px;
+    color: #05060A;
+  }
+  .brand-name{
+    font-family:'Space Grotesk', sans-serif;
+    font-weight:600;
+    font-size: 15px;
+    letter-spacing: -0.01em;
+  }
+  .balance-pill{
+    display:flex;
+    align-items:center;
+    gap:7px;
+    background: var(--bg-raised);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 7px 12px 7px 8px;
+  }
+  .balance-pill .dot{
+    width:16px;height:16px;border-radius:50%;
+    background: var(--mint);
+    display:flex;align-items:center;justify-content:center;
+    font-size:10px; color:#05060A; font-weight:700;
+  }
+  #balance{
+    font-family:'JetBrains Mono', monospace;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+  }
+
+  .hero{
+    padding: 6px 20px 22px;
+    position: relative;
+    z-index: 2;
+  }
+  .eyebrow{
+    font-family:'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+    margin-bottom: 6px;
+  }
+  h1{
+    font-family:'Space Grotesk', sans-serif;
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height:1.1;
+  }
+  .hero p{
+    margin-top: 6px;
+    font-size: 13.5px;
+    color: var(--text-dim);
+    line-height:1.5;
+    max-width: 30ch;
+  }
+
+  main{
+    flex:1;
+    padding: 4px 14px 20px;
+    display:flex;
+    flex-direction:column;
+    gap: 10px;
+    position:relative;
+    z-index:2;
+    overflow-y:auto;
+  }
+
+  .task{
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    padding: 14px;
+    display:flex;
+    align-items:center;
+    gap: 13px;
+    transition: border-color .2s ease, transform .2s ease;
+  }
+  .task.done{
+    border-color: rgba(79,227,163,0.35);
+    background: linear-gradient(180deg, rgba(79,227,163,0.06), var(--bg-card) 40%);
+  }
+  .task-icon{
+    width: 42px; height: 42px;
+    flex-shrink:0;
+    border-radius: 12px;
+    display:flex; align-items:center; justify-content:center;
+    font-size: 19px;
+    background: var(--bg-raised);
+    border: 1px solid var(--line);
+  }
+  .task-body{ flex:1; min-width:0; }
+  .task-title{
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+  .task-meta{
+    font-size: 12px;
+    color: var(--text-faint);
+    margin-top: 2px;
+    display:flex;
+    align-items:center;
+    gap: 6px;
+  }
+  .task-meta .reward{
+    color: var(--amber);
+    font-family:'JetBrains Mono', monospace;
+    font-weight: 500;
+  }
+
+  .claim-btn{
+    flex-shrink:0;
+    border: none;
+    border-radius: 11px;
+    padding: 9px 14px;
+    font-family: 'Inter', sans-serif;
+    font-size: 12.5px;
+    font-weight: 600;
+    cursor: pointer;
+    background: var(--amber);
+    color: #201200;
+    transition: transform .12s ease, background .2s ease, opacity .2s ease;
+    min-width: 76px;
+  }
+  .claim-btn:active{ transform: scale(0.94); }
+  .claim-btn.watching{
+    background: var(--bg-raised);
+    color: var(--text-dim);
+    border: 1px solid var(--line);
+    pointer-events:none;
+  }
+  .claim-btn.claimed{
+    background: rgba(79,227,163,0.14);
+    color: var(--mint);
+    border: 1px solid rgba(79,227,163,0.35);
+    pointer-events:none;
+  }
+  .claim-btn.locked{
+    background: var(--bg-raised);
+    color: var(--text-faint);
+    border: 1px solid var(--line);
+    pointer-events:none;
+  }
+
+  .section-label{
+    font-family:'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+    padding: 10px 8px 2px;
+  }
+
+  footer{
+    padding: 14px 20px 20px;
+    border-top: 1px solid var(--line);
+    display:flex;
+    align-items:center;
+    justify-content: space-between;
+    position: relative;
+    z-index:2;
+  }
+  .streak{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    font-size: 12px;
+    color: var(--text-dim);
+  }
+  .streak b{ color: var(--text); font-weight:600; }
+
+  /* toast */
+  .toast{
+    position:absolute;
+    left: 50%;
+    bottom: 90px;
+    transform: translateX(-50%) translateY(12px);
+    background: var(--bg-raised);
+    border: 1px solid rgba(79,227,163,0.4);
+    color: var(--mint);
+    font-size: 12.5px;
+    font-weight: 600;
+    padding: 10px 16px;
+    border-radius: 12px;
+    opacity: 0;
+    pointer-events:none;
+    transition: opacity .25s ease, transform .25s ease;
+    z-index: 10;
+    white-space: nowrap;
+  }
+  .toast.show{
+    opacity:1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ transition: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<div class="phone">
+  <header>
+    <div class="brand">
+      <div class="brand-mark">V</div>
+      <div class="brand-name">Vault</div>
+    </div>
+    <div class="balance-pill">
+      <span class="dot">$</span>
+      <span id="balance">0.00</span>
+    </div>
+  </header>
+
+  <div class="hero">
+    <div class="eyebrow">Daily tasks</div>
+    <h1>Earn a few<br>minutes at a time.</h1>
+    <p>Watch, tap, and claim. Balances update instantly — cash out once you clear the minimum.</p>
+  </div>
+
+  <div class="section-label">Available now</div>
+
+  <main id="taskList">
+    <!-- tasks injected by JS -->
+  </main>
+
+  <footer>
+    <div class="streak">
+      <span>🔥</span>
+      <span><b id="streakCount">0</b> tasks cleared today</span>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast">Reward claimed</div>
+</div>
+
+<script>
+  // ── Telegram Mini App integration ──────────────────────────────
+  // If this page is opened inside Telegram, window.Telegram.WebApp
+  // gives you the user's info and lets you tell Telegram the app is ready.
+  // Docs: https://core.telegram.org/bots/webapps
+
+  window.onerror = function(msg, url, line, col, error) {
+    document.body.insertAdjacentHTML('afterbegin',
+      '<div style="position:fixed;top:0;left:0;right:0;background:#c0392b;color:#fff;' +
+      'padding:14px;font-family:monospace;font-size:13px;z-index:9999;white-space:pre-wrap;">' +
+      'JS ERROR:\n' + msg + '\nLine ' + line + ', Col ' + col + '</div>');
+    return false;
+  };
+
+  const tg = window.Telegram?.WebApp;
+  if (tg) {
+    tg.ready();
+    tg.expand();
+    // tg.initDataUnsafe.user.id -> the Telegram user's numeric ID,
+    // useful as the key for storing their balance server-side.
+  }
+
+  // ── Ad network SDK ──────────────────────────────────────────────
+  // Paste your ad network's SDK <script> tag in the <head> of this
+  // file (below the Google Fonts links), then replace the body of
+  // completeTask()'s "watch" branch below with your SDK's actual
+  // show-ad call, e.g. something like:
+  //
+  //   show_XXXXXXX('interstitial').then(() => {
+  //     completeTask(task);  // only grant the reward once the SDK confirms
+  //   });
+  //
+  // Check the "Docs" link on your ad network's dashboard for the
+  // exact function name and parameters — they vary by provider.
+
+  const tasks = [
+    { id: 't1', icon: '🎬', title: 'Watch a short ad', meta: '15 sec · rewarded video', reward: 0.008, action: 'watch', duration: 2200 },
+    { id: 't2', icon: '⚡', title: 'Open today\'s offer', meta: 'tap through · no purchase needed', reward: 0.006, action: 'watch', duration: 1400 },
+    { id: 't3', icon: '🧩', title: 'Complete a mini survey', meta: '~30 sec · 3 questions', reward: 0.014, action: 'watch', duration: 2600 },
+    { id: 't4', icon: '📮', title: 'Check in for the day', meta: 'once every 24h', reward: 0.004, action: 'instant' },
+  ];
+
+  let balance = 0;
+  let streak = 0;
+  const state = {};
+
+  const listEl = document.getElementById('taskList');
+  const balanceEl = document.getElementById('balance');
+  const streakEl = document.getElementById('streakCount');
+  const toastEl = document.getElementById('toast');
+
+  function fmt(n){ return n.toFixed(3).replace(/0+$/,'').replace(/\.$/,'.000').slice(0, n < 0.01 ? 5 : 6) ; }
+
+  function render(){
+    listEl.innerHTML = '';
+    tasks.forEach(t => {
+      const s = state[t.id] || 'idle';
+      const card = document.createElement('div');
+      card.className = 'task' + (s === 'claimed' ? ' done' : '');
+
+      let btnHtml = '';
+      if (s === 'claimed') {
+        btnHtml = `<button class="claim-btn claimed">✓ Done</button>`;
+      } else if (s === 'watching') {
+        btnHtml = `<button class="claim-btn watching">···</button>`;
+      } else {
+        btnHtml = `<button class="claim-btn" data-id="${t.id}">Claim</button>`;
+      }
+
+      card.innerHTML = `
+        <div class="task-icon">${t.icon}</div>
+        <div class="task-body">
+          <div class="task-title">${t.title}</div>
+          <div class="task-meta"><span class="reward">+$${t.reward.toFixed(3)}</span><span>· ${t.meta}</span></div>
+        </div>
+        ${btnHtml}
+      `;
+      listEl.appendChild(card);
+    });
+
+    balanceEl.textContent = balance.toFixed(3);
+    streakEl.textContent = streak;
+
+    listEl.querySelectorAll('.claim-btn[data-id]').forEach(btn => {
+      btn.addEventListener('click', () => handleClaim(btn.dataset.id));
+    });
+  }
+
+  function handleClaim(id){
+    const task = tasks.find(t => t.id === id);
+    if (!task || state[id]) return;
+
+    if (task.action === 'instant'){
+      completeTask(task);
+      return;
+    }
+
+    state[id] = 'watching';
+    render();
+
+    // Rewarded Interstitial via Monetag SDK — reward is only granted
+    // once the SDK's promise resolves (i.e. the ad was actually watched).
+    show_11495278().then(() => {
+      completeTask(task);
+    }).catch(() => {
+      // Ad failed to load or was skipped — reset the button so the
+      // user can try again instead of getting stuck on "watching".
+      state[id] = 'idle';
+      render();
+    });
+  }
+
+  function completeTask(task){
+    state[task.id] = 'claimed';
+    balance += task.reward;
+    streak += 1;
+    render();
+    showToast(`+$${task.reward.toFixed(3)} added to balance`);
+  }
+
+  function showToast(msg){
+    toastEl.textContent = msg;
+    toastEl.classList.add('show');
+    clearTimeout(showToast._t);
+    showToast._t = setTimeout(() => toastEl.classList.remove('show'), 1800);
+  }
+
+  render();
+</script>
+
+</body>
+</html>
