@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>JS Test</title>
+</head>
+<body style="background:#333; color:#fff; font-size:24px; padding:20px;">
+  <p id="status">If you see this text and a RED background, JavaScript did NOT run.</p>
+  <script>
+    document.body.style.background = 'limegreen';
+    document.getElementById('status').textContent = 'JAVASCRIPT WORKED! Background should be green.';
+    document.title = 'JS TEST - SUCCESS';
+  </script>
+</body>
+</html>
