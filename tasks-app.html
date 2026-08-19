@@ -412,7 +412,7 @@
 
     // Rewarded Interstitial via Monetag SDK — reward is only granted
     // once the SDK's promise resolves (i.e. the ad was actually watched).
-    show_11495278({ type: 'pop' }).then(() => {
+    show_11495278('pop').then(() => {
       completeTask(task);
     }).catch(() => {
       // Ad failed to load or was skipped — reset the button so the
