@@ -1,14 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <script src='//libtl.com/sdk.js' data-zone='11495278' data-sdk='show_11495278'></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Vault — Tasks</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
-<!-- Monetag SDK — loads the show_11495278() function used below. 
-  -->
 <script src='//libtl.com/sdk.js' data-zone='11495278' data-sdk='show_11495278'></script>
 <style>
   :root{
@@ -24,10 +21,7 @@
     --text-faint: #5C6070;
   }
   *{ box-sizing: border-box; margin:0; padding:0; }
-  html,body{
-    background: #05060A;
-    height: 100%;
-  }
+  html,body{ background: #05060A; height: 100%; }
   body{
     font-family: 'Inter', -apple-system, sans-serif;
     color: var(--text);
@@ -37,7 +31,6 @@
     min-height: 100vh;
     padding: 24px 12px;
   }
-
   .phone{
     width: 100%;
     max-width: 380px;
@@ -50,8 +43,6 @@
     flex-direction:column;
     min-height: 720px;
   }
-
-  /* ambient glow signature */
   .phone::before{
     content:"";
     position:absolute;
@@ -61,7 +52,6 @@
     transform: translateX(-50%);
     pointer-events:none;
   }
-
   header{
     padding: 18px 20px 14px;
     display:flex;
@@ -70,11 +60,7 @@
     position: relative;
     z-index: 2;
   }
-  .brand{
-    display:flex;
-    align-items:center;
-    gap:9px;
-  }
+  .brand{ display:flex; align-items:center; gap:9px; }
   .brand-mark{
     width: 26px; height: 26px;
     border-radius: 8px;
@@ -111,12 +97,7 @@
     font-weight: 500;
     letter-spacing: -0.02em;
   }
-
-  .hero{
-    padding: 6px 20px 22px;
-    position: relative;
-    z-index: 2;
-  }
+  .hero{ padding: 6px 20px 22px; position: relative; z-index: 2; }
   .eyebrow{
     font-family:'JetBrains Mono', monospace;
     font-size: 11px;
@@ -139,7 +120,6 @@
     line-height:1.5;
     max-width: 30ch;
   }
-
   main{
     flex:1;
     padding: 4px 14px 20px;
@@ -150,7 +130,6 @@
     z-index:2;
     overflow-y:auto;
   }
-
   .task{
     background: var(--bg-card);
     border: 1px solid var(--line);
@@ -175,11 +154,7 @@
     border: 1px solid var(--line);
   }
   .task-body{ flex:1; min-width:0; }
-  .task-title{
-    font-size: 14px;
-    font-weight: 600;
-    letter-spacing: -0.01em;
-  }
+  .task-title{ font-size: 14px; font-weight: 600; letter-spacing: -0.01em; }
   .task-meta{
     font-size: 12px;
     color: var(--text-faint);
@@ -193,7 +168,6 @@
     font-family:'JetBrains Mono', monospace;
     font-weight: 500;
   }
-
   .claim-btn{
     flex-shrink:0;
     border: none;
@@ -227,7 +201,6 @@
     border: 1px solid var(--line);
     pointer-events:none;
   }
-
   .section-label{
     font-family:'JetBrains Mono', monospace;
     font-size: 10.5px;
@@ -236,7 +209,6 @@
     color: var(--text-faint);
     padding: 10px 8px 2px;
   }
-
   footer{
     padding: 14px 20px 20px;
     border-top: 1px solid var(--line);
@@ -246,16 +218,8 @@
     position: relative;
     z-index:2;
   }
-  .streak{
-    display:flex;
-    align-items:center;
-    gap:8px;
-    font-size: 12px;
-    color: var(--text-dim);
-  }
+  .streak{ display:flex; align-items:center; gap:8px; font-size: 12px; color: var(--text-dim); }
   .streak b{ color: var(--text); font-weight:600; }
-
-  /* toast */
   .toast{
     position:absolute;
     left: 50%;
@@ -274,14 +238,8 @@
     z-index: 10;
     white-space: nowrap;
   }
-  .toast.show{
-    opacity:1;
-    transform: translateX(-50%) translateY(0);
-  }
-
-  @media (prefers-reduced-motion: reduce){
-    *{ transition: none !important; }
-  }
+  .toast.show{ opacity:1; transform: translateX(-50%) translateY(0); }
+  @media (prefers-reduced-motion: reduce){ *{ transition: none !important; } }
 </style>
 </head>
 <body>
@@ -307,7 +265,6 @@
   <div class="section-label">Available now</div>
 
   <main id="taskList">
-    <!-- tasks injected by JS -->
   </main>
 
   <footer>
@@ -321,30 +278,14 @@
 </div>
 
 <script>
-  // ── Telegram Mini App integration ──────────────────────────────
-  // If this page is opened inside Telegram, window.Telegram.WebApp
-  // gives you the user's info and lets you tell Telegram the app is ready.
-  // Docs: https://core.telegram.org/bots/webapps
   const tg = window.Telegram?.WebApp;
   if (tg) {
     tg.ready();
     tg.expand();
-    // tg.initDataUnsafe.user.id -> the Telegram user's numeric ID,
-    // useful as the key for storing their balance server-side.
   }
 
-  // ── Ad network SDK ──────────────────────────────────────────────
-  // Paste your ad network's SDK <script> tag in the <head> of this
-  // file (below the Google Fonts links), then replace the body of
-  // completeTask()'s "watch" branch below with your SDK's actual
-  // show-ad call, e.g. something like:
-  //
-  //   show_XXXXXXX('interstitial').then(() => {
-  //     completeTask(task);  // only grant the reward once the SDK confirms
-  //   });
-  //
-  // Check the "Docs" link on your ad network's dashboard for the
-  // exact function name and parameters — they vary by provider.
+  const telegramUserId = tg?.initDataUnsafe?.user?.id ? String(tg.initDataUnsafe.user.id) : null;
+  const BACKEND_URL = "https://vault-rewards.keenanmclaren21.workers.dev";
 
   const tasks = [
     { id: 't1', icon: '🎬', title: 'Watch a short ad', meta: '15 sec · rewarded video', reward: 0.008, action: 'watch', duration: 2200 },
@@ -362,7 +303,17 @@
   const streakEl = document.getElementById('streakCount');
   const toastEl = document.getElementById('toast');
 
-  function fmt(n){ return n.toFixed(3).replace(/0+$/,'').replace(/\.$/,'.000').slice(0, n < 0.01 ? 5 : 6) ; }
+  async function fetchBalance() {
+    if (!telegramUserId) return;
+    try {
+      const res = await fetch(BACKEND_URL + "/balance?ymid=" + telegramUserId);
+      const data = await res.json();
+      balance = data.balance || 0;
+      render();
+    } catch (e) {
+      console.log('Failed to fetch balance', e);
+    }
+  }
 
   function render(){
     listEl.innerHTML = '';
@@ -373,11 +324,11 @@
 
       let btnHtml = '';
       if (s === 'claimed') {
-        btnHtml = `<button class="claim-btn claimed">✓ Done</button>`;
+        btnHtml = '<button class="claim-btn claimed">✓ Done</button>';
       } else if (s === 'watching') {
-        btnHtml = `<button class="claim-btn watching">···</button>`;
+        btnHtml = '<button class="claim-btn watching">···</button>';
       } else {
-        btnHtml = `<button class="claim-btn" data-id="${t.id}">Claim</button>`;
+        btnHtml = '<button class="claim-btn" data-id="' + t.id + '">Claim</button>';
       }
 
       card.innerHTML = `
@@ -411,24 +362,20 @@
     state[id] = 'watching';
     render();
 
-    // Rewarded Interstitial via Monetag SDK — reward is only granted
-    // once the SDK's promise resolves (i.e. the ad was actually watched).
-    show_11495278().then(() => {
+    show_11495278('pop', { ymid: telegramUserId }).then(() => {
       completeTask(task);
     }).catch(() => {
-      // Ad failed to load or was skipped — reset the button so the
-      // user can try again instead of getting stuck on "watching".
       state[id] = 'idle';
       render();
     });
   }
 
-  function completeTask(task){
+  async function completeTask(task){
     state[task.id] = 'claimed';
-    balance += task.reward;
     streak += 1;
     render();
-    showToast(`+$${task.reward.toFixed(3)} added to balance`);
+    showToast('+$' + task.reward.toFixed(3) + ' added to balance');
+    setTimeout(fetchBalance, 2000);
   }
 
   function showToast(msg){
@@ -438,6 +385,7 @@
     showToast._t = setTimeout(() => toastEl.classList.remove('show'), 1800);
   }
 
+  fetchBalance();
   render();
 </script>
 
